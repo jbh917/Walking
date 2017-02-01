@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="320dp"
+        android:layout_height="250dp"
+        android:gravity="center"
+        android:padding="25dp"
+        android:background="#ffffff">
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="10pt"
+                android:layout_weight="3"
+                android:textColor="#000"
+                android:text="@string/dialog_exit" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:background="#ddd"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:id="@+id/no"
+                android:onClick="onClick"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"
+                    android:textColor="#444"
+                    android:textStyle="bold"
+                    android:textSize="6pt"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:layout_weight="3"
+                android:gravity="center"
+                >
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:background="#ddd"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:id="@+id/yes"
+                android:onClick="onClick"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:textColor="#444"
+                    android:textStyle="bold"
+                    android:textSize="6pt"/>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
