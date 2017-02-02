@@ -265,13 +265,13 @@ public class MainActivity extends Activity {
 
             case R.id.exit: {
 
-                /*
+
                 ////service_exit_start
                 Intent serviceIntent = new Intent("jangcho.service.WalkingService");
                 stopService(serviceIntent);
 
                 ////service_exit_end
-                */
+
                 button_start.setVisibility(View.VISIBLE);
                 button_exit.setVisibility(View.GONE);
 
