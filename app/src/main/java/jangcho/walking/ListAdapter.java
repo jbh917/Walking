@@ -26,7 +26,7 @@ public class ListAdapter extends BaseAdapter {
         this.context = context;
         mData = data;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.weight=(int) MyProfile.getValue(context, "WEIGHT");;
+        this.weight=(int) MyProfile.getValue(context, "WEIGHT");
     }
 
     @Override
