@@ -18,6 +18,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -46,9 +47,11 @@ public class MainActivity extends Activity {
     int weight;        //무게
     double distance;
     int timer_sec;
+    String debug;
 
 
     private TimerTask second;
+    Timer timer;
     private final Handler handler = new Handler();
 
     Spinner spinner_sex;
@@ -57,14 +60,15 @@ public class MainActivity extends Activity {
     TextView text_timer;
     TextView text_distance;
     TextView text_calorie;
+    TextView text_debug;
     Button button_start;
     Button button_exit;
 
 
     private GpsInfo gps;
 
-    LocationManager lm;
-    String provider;
+   // LocationManager lm;
+   // String provider;
     Location location1;
     int count;
     double templat;
@@ -105,12 +109,34 @@ public class MainActivity extends Activity {
         mRealm = Realm.getDefaultInstance();
 
 
+        //강제종료 값 복구_start
+        if(savedInstanceState!=null){
+
+
+            Bundle bundle = savedInstanceState.getBundle("temp");
+            /////////DB_start
+
+            mRealm.beginTransaction();
+            UserInfo userinfo = mRealm.createObject(UserInfo.class);
+            userinfo.setDate();
+            userinfo.setTime(bundle.getInt("time"));
+            userinfo.setDistance(bundle.getDouble("distance"));
+            mRealm.commitTransaction();
+            ////////DB_end
+
+        }
+
+
+        //강제종료 값 복구_end
+
+
         spinner_sex = (Spinner) findViewById(R.id.sex);
         edit_tall = (EditText) findViewById(R.id.tall);
         edit_weight = (EditText) findViewById(R.id.weight);
         text_timer = (TextView) findViewById(R.id.timer);
         text_distance = (TextView) findViewById(R.id.distance);
         text_calorie = (TextView) findViewById(R.id.calorie);
+        text_debug =(TextView)findViewById(R.id.debug);
         button_start = (Button) findViewById(R.id.start);
         button_exit = (Button) findViewById(R.id.exit);
 
@@ -120,8 +146,8 @@ public class MainActivity extends Activity {
         weight = (int) MyProfile.getValue(this, "WEIGHT");
         distance = 0;
         //gps = new GpsInfo(MainActivity.this);
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        provider = lm.getBestProvider(new Criteria(), true);
+       // lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+       // provider = lm.getBestProvider(new Criteria(), true);
 
         if (sex == 1) {
             spinner_sex.setSelection(1);
@@ -240,6 +266,7 @@ public class MainActivity extends Activity {
 
                     button_start.setVisibility(View.GONE);
                     button_exit.setVisibility(View.VISIBLE);
+                    text_debug.setVisibility(View.VISIBLE);
                     text_timer.setVisibility(View.VISIBLE);
                     text_distance.setVisibility(View.VISIBLE);
                     text_calorie.setVisibility(View.VISIBLE);
@@ -258,12 +285,12 @@ public class MainActivity extends Activity {
 
                     ///bind_end
 
-
+/*
                     //////////////gps_start
                     count = 0;
                     lm.requestLocationUpdates(provider, 1000, 0, gpsListener);
                     //////////////gps_end
-
+*/
                 }
 
 
@@ -281,6 +308,8 @@ public class MainActivity extends Activity {
                 button_exit.setVisibility(View.GONE);
 
                 second.cancel();//타이머 종료
+                timer.cancel();
+
                 /////////DB_start
 
                 mRealm.beginTransaction();
@@ -295,7 +324,7 @@ public class MainActivity extends Activity {
                 //lm.removeUpdates(mLocationListener);
                 distance = 0;
 
-
+/*
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -307,7 +336,7 @@ public class MainActivity extends Activity {
                     return;
                 }
                 lm.removeUpdates(gpsListener);
-
+*/
                 break;
             }
 
@@ -330,14 +359,17 @@ public class MainActivity extends Activity {
             public void run() {
                 try{
                     timer_sec = mBinder.getTime();
+                    distance = mBinder.getDisatance();
+                    debug = mBinder.getDebug();
                 }catch (RemoteException e){
                     e.printStackTrace();
                 }
                 Update();
             }
         };
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(second, 100, 1000);
+
     }
 
     protected void Update() {
@@ -351,10 +383,10 @@ public class MainActivity extends Activity {
                 minute = (timer_sec - (hour * 3600)) / 60;
                 second = (timer_sec - (hour * 3600) - (minute * 60));
                 String time = String.format("%02d:%02d:%02d", hour, minute, second);
-
                 text_timer.setText(time);
-
-                text_calorie.setText(""+Double.parseDouble(String.format("%.2f",cal_cal()))+"Kcal");
+                text_distance.setText("걸은 거리 : "+distance + "");
+                text_calorie.setText("칼로리 : "+Double.parseDouble(String.format("%.2f",cal_cal()))+"Kcal");
+                text_debug.setText(debug);
             }
         };
         handler.post(updater);
@@ -374,6 +406,7 @@ public class MainActivity extends Activity {
 
     }
 
+    /*
     LocationListener gpsListener = new LocationListener()   // GPS가 정보가 변경 될때 호출 되는 리스너
     {
         @Override
@@ -438,7 +471,7 @@ public class MainActivity extends Activity {
 
     }
 
-
+*/
 
 /////////////////////////////gps_end
 
@@ -470,6 +503,24 @@ public class MainActivity extends Activity {
     }
 
     /////뒤로 가는 버튼_end
+
+
+    protected void onSaveInstanceState(Bundle saveBundle){
+
+        super.onSaveInstanceState(saveBundle);
+        Bundle bundle = new Bundle();
+
+        double temp_distance = distance;
+        int temp_time = timer_sec;
+
+        bundle.putDouble("distance",temp_distance);
+        bundle.putInt("time",temp_time);
+        //저장할 데이터를 번들객체에 저장해서, 다시 복구시 넘어갈 번들안에 계층적으로 저장했다가..
+        //복구시에 번들 안에서 다시 이 저장된 번들객체를 추출해서 처리하게 됩니다.
+
+        saveBundle.putParcelable("temp",bundle);
+
+    }
 
 
 

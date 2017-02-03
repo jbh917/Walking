@@ -13,6 +13,6 @@ interface IWalkingService {
 
             int getTime();
             double getDisatance();
-
+            String getDebug();
 
 }

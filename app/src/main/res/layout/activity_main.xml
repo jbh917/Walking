@@ -102,21 +102,42 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/timer"
+            android:gravity="center"
+            android:textSize="50dp"
             android:visibility="invisible"
             />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
+
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/distance"
-            android:visibility="invisible"/>
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/distance"
+                android:textSize="20dp"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/calorie"
+                android:textSize="20dp"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/calorie"
+            android:id="@+id/debug"
+            android:textSize="20dp"
             android:visibility="invisible"/>
 
 
