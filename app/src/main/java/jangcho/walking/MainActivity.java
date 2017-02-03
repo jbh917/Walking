@@ -93,6 +93,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ///////////////bindService_start
+        Intent serviceIntent = new Intent(this,WalkingService.class);
+        bindService(serviceIntent,mConnection,BIND_AUTO_CREATE);
+        ///////////////bindService_end
+
 
         /////////////////초기화 부분_start
         RealmConfiguration config = new RealmConfiguration.Builder(this).build();
@@ -239,7 +244,7 @@ public class MainActivity extends Activity {
                     text_distance.setVisibility(View.VISIBLE);
                     text_calorie.setVisibility(View.VISIBLE);
 
-                    timer_sec = 0;
+
 
 
 
@@ -247,8 +252,8 @@ public class MainActivity extends Activity {
 
                     Intent serviceIntent = new Intent(this,WalkingService.class);
                     startService(serviceIntent);
-                    bindService(serviceIntent,mConnection,BIND_AUTO_CREATE);
 
+                    timer_sec = 0;
                     timerStart();       //타이머시작
 
                     ///bind_end
@@ -270,14 +275,12 @@ public class MainActivity extends Activity {
 
                 Intent serviceIntent = new Intent(this,WalkingService.class);
                 stopService(serviceIntent);
-                unbindService(mConnection);
 
 
                 button_start.setVisibility(View.VISIBLE);
                 button_exit.setVisibility(View.GONE);
 
                 second.cancel();//타이머 종료
-
                 /////////DB_start
 
                 mRealm.beginTransaction();
@@ -334,7 +337,7 @@ public class MainActivity extends Activity {
             }
         };
         Timer timer = new Timer();
-        timer.schedule(second, 0, 1000);
+        timer.schedule(second, 100, 1000);
     }
 
     protected void Update() {
@@ -444,7 +447,7 @@ public class MainActivity extends Activity {
      mRealm.close();
      /////////unbindService_start
 
-     //unbindService(mConnection);
+     unbindService(mConnection);
      /////////unbindService_end
  }
 

@@ -32,8 +32,12 @@ public class WalkingService extends Service {
 
         }
 
+
+
         @Override
         public int getTime() throws RemoteException {
+
+
 
             Log.i("getTime","getTime");
 
@@ -68,8 +72,15 @@ public class WalkingService extends Service {
 
     }
 
+
+
     public int onStartCommand(Intent intent, int flags, int startId){
         super.onStartCommand(intent, flags, startId);
+
+        if(second!=null){
+            timer_sec=0;
+            second.cancel();
+        }
 
         timer_sec=0;
         timerStart();
@@ -80,6 +91,7 @@ public class WalkingService extends Service {
 
         return START_NOT_STICKY;
     }
+
 
     public void timerStart() {
 
