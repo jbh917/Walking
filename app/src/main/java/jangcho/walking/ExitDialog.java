@@ -28,6 +28,7 @@ public class ExitDialog extends Activity {
 
     }
 
+
     public void onClick(View v){
         switch(v.getId()){
 

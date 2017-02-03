@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.view.KeyEvent;
@@ -70,11 +71,11 @@ public class MainActivity extends Activity {
     double templat;
     double templon;
 
-    WalkingService mWalkingService = null;
+    private IWalkingService mBinder = null;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mWalkingService = ((WalkingService.LocalBinder) service).getCountService();
+            mBinder = IWalkingService.Stub.asInterface(service);
         }
 
         @Override
@@ -92,6 +93,8 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
 
         /////////////////초기화 부분_start
@@ -223,11 +226,19 @@ public class MainActivity extends Activity {
             case R.id.start: {
 
 
+
+
                 if (spinner_sex.getSelectedItem().toString().equals("성별") || Integer.valueOf(edit_weight.getText().toString()) == 0 || Integer.valueOf(edit_tall.getText().toString()) == 0) {
                     Toast toast = Toast.makeText(this, "성별/몸무게/키를 입력해주세요", Toast.LENGTH_LONG);
                     toast.show();
                     break;
                 } else {
+
+                    ///////////////bindService_start
+                    Intent serviceIntent = new Intent("jangcho.service.WalkingService");
+                    bindService(serviceIntent,mConnection,BIND_AUTO_CREATE);
+                    ///////////////bindService_end
+
                     button_start.setVisibility(View.GONE);
                     button_exit.setVisibility(View.VISIBLE);
                     text_timer.setVisibility(View.VISIBLE);
@@ -238,7 +249,17 @@ public class MainActivity extends Activity {
 
 
 
-                    timerStart();       //타이머시작
+                    ///bind_start
+                    try{
+                        timer_sec = mBinder.getTime();
+                    }catch (RemoteException e){
+                        e.printStackTrace();
+                    }
+
+                    //timerStart();       //타이머시작
+
+
+                    ///bind_end
 
 
                     //////////////gps_start
@@ -254,6 +275,11 @@ public class MainActivity extends Activity {
 
             case R.id.exit: {
 
+
+                /////////unbindService_start
+
+                unbindService(mConnection);
+                /////////unbindService_end
 
                 button_start.setVisibility(View.VISIBLE);
                 button_exit.setVisibility(View.GONE);
@@ -307,8 +333,12 @@ public class MainActivity extends Activity {
 
             @Override
             public void run() {
+                try{
+                    timer_sec = mBinder.getTime();
+                }catch (RemoteException e){
+                    e.printStackTrace();
+                }
                 Update();
-                timer_sec++;
             }
         };
         Timer timer = new Timer();

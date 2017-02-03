@@ -5,8 +5,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -16,20 +21,28 @@ import android.support.v4.app.NotificationCompat;
 public class WalkingService extends Service {
 
     private int timer_sec=0;
+    private double distance=0;
+    private TimerTask second;
 
     private Thread mCountThread;
+    IWalkingService.Stub mBinder = new IWalkingService.Stub() {
+        @Override
+        public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
 
-    public int getCurCountNumber(){
-        return timer_sec;
-    }
-
-    public class LocalBinder extends Binder {
-        WalkingService getCountService(){
-            return WalkingService.this;
         }
-    }
 
-    private final Binder mBinder = new LocalBinder();
+        @Override
+        public int getTime() throws RemoteException {
+
+            return timer_sec;
+        }
+
+        @Override
+        public double getDisatance() throws RemoteException {
+            return distance;
+        }
+    };
+
 
     public void onCreate(){
         super.onCreate();
@@ -48,23 +61,43 @@ public class WalkingService extends Service {
         //////notification_end
 
 
+
+
     }
 
     public int onStartCommand(Intent intent, int flags, int startId){
         super.onStartCommand(intent, flags, startId);
 
+
+        timerStart();
+
+
         return START_NOT_STICKY;
     }
 
-    public void onDestroy(){
+    public void timerStart() {
 
+        second = new TimerTask() {
+
+
+            @Override
+            public void run() {
+                timer_sec++;
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(second, 0, 1000);
+    }
+
+    public void onDestroy(){
+        second.cancel();
         super.onDestroy();
 
     }
 
     @Nullable
     @Override
-    public Binder onBind(Intent intent) {
+    public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
