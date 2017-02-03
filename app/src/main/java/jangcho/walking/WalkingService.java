@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationCompat;
 public class WalkingService extends Service {
 
     private int timer_sec=0;
+
     private Thread mCountThread;
 
     public int getCurCountNumber(){
@@ -37,7 +38,7 @@ public class WalkingService extends Service {
         PendingIntent pIntent= PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         Notification noti = new NotificationCompat.Builder(this)
                 .setContentTitle("Walking Service")
-                .setContentText("Running Walking Service")
+                .setContentText("측정 중입니다.")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pIntent)
                 .build();
@@ -52,34 +53,10 @@ public class WalkingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId){
         super.onStartCommand(intent, flags, startId);
 
-        timer_sec = intent.getExtras().getInt("time");
-
-        if(mCountThread==null){
-            mCountThread = new Thread("Count Thread"){
-                public void run(){
-                    while(true){
-
-                        timer_sec++;
-                        try{Thread.sleep(1000);}
-                        catch(InterruptedException e){
-                            e.printStackTrace();
-                            break;
-                        }
-                    }
-                }
-            };
-            mCountThread.start();
-        }
-
         return START_NOT_STICKY;
     }
 
     public void onDestroy(){
-        if(mCountThread!=null){
-            mCountThread.interrupt();
-            mCountThread=null;
-            timer_sec=0;
-        }
 
         super.onDestroy();
 

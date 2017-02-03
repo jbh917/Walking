@@ -188,6 +188,7 @@ public class MainActivity extends Activity {
             }
         });
 
+
         edit_tall.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -220,13 +221,7 @@ public class MainActivity extends Activity {
             }
 
             case R.id.start: {
-                /*
-                ////service_start
-                Intent serviceIntent = new Intent("jangcho.service.WalkingService");
-                startService(serviceIntent);
 
-                ////service_end
-                */
 
                 if (spinner_sex.getSelectedItem().toString().equals("성별") || Integer.valueOf(edit_weight.getText().toString()) == 0 || Integer.valueOf(edit_tall.getText().toString()) == 0) {
                     Toast toast = Toast.makeText(this, "성별/몸무게/키를 입력해주세요", Toast.LENGTH_LONG);
@@ -240,13 +235,7 @@ public class MainActivity extends Activity {
                     text_calorie.setVisibility(View.VISIBLE);
 
                     timer_sec = 0;
-                    ////service end_start
-                    if (isServiceRunningCheck()) {
-                        timer_sec = mWalkingService.getCurCountNumber();
-                        unbindService(mConnection);
-                    }
 
-                    ////service end_end
 
 
                     timerStart();       //타이머시작
@@ -265,12 +254,6 @@ public class MainActivity extends Activity {
 
             case R.id.exit: {
 
-
-                ////service_exit_start
-                Intent serviceIntent = new Intent("jangcho.service.WalkingService");
-                stopService(serviceIntent);
-
-                ////service_exit_end
 
                 button_start.setVisibility(View.VISIBLE);
                 button_exit.setVisibility(View.GONE);
@@ -454,23 +437,11 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
 
         final Intent intent = new Intent(getApplicationContext(), ExitDialog.class);
-        intent.putExtra("time",timer_sec);
         startActivity(intent);
     }
 
     /////뒤로 가는 버튼_end
 
-    /////서비스 확인_start
 
-    public boolean isServiceRunningCheck() {
-        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("WalkingService".equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    /////서비스 확인_end
 
 }

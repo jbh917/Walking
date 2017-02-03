@@ -1,15 +1,8 @@
 package jangcho.walking;
 
 import android.app.Activity;
-import android.app.IntentService;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,18 +16,6 @@ public class ExitDialog extends Activity {
     int time;
 
 
-    WalkingService mWalkingService =null;
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mWalkingService = ((WalkingService.LocalBinder)service).getCountService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 
 
     @Override
@@ -44,8 +25,6 @@ public class ExitDialog extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         setContentView(R.layout.dialog_exit);
 
-        Intent intent = getIntent();
-        time = intent.getExtras().getInt("time");
 
     }
 
@@ -53,14 +32,14 @@ public class ExitDialog extends Activity {
         switch(v.getId()){
 
 
-            case R.id.yes:{
-                Intent serviceIntent = new Intent("jangcho.service.WalkingService");
-                serviceIntent.putExtra("time",time);
-                startService(serviceIntent);
+            case R.id.yes:
+
+
+            {
 
                 moveTaskToBack(true);
                 finish();
-                //android.os.Process.killProcess(android.os.Process.myPid());
+                android.os.Process.killProcess(android.os.Process.myPid());
 
                 break;
             }
