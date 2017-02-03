@@ -2,7 +2,6 @@ package jangcho.walking;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -93,8 +92,6 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
 
         /////////////////초기화 부분_start
@@ -234,10 +231,7 @@ public class MainActivity extends Activity {
                     break;
                 } else {
 
-                    ///////////////bindService_start
-                    Intent serviceIntent = new Intent("jangcho.service.WalkingService");
-                    bindService(serviceIntent,mConnection,BIND_AUTO_CREATE);
-                    ///////////////bindService_end
+
 
                     button_start.setVisibility(View.GONE);
                     button_exit.setVisibility(View.VISIBLE);
@@ -250,14 +244,12 @@ public class MainActivity extends Activity {
 
 
                     ///bind_start
-                    try{
-                        timer_sec = mBinder.getTime();
-                    }catch (RemoteException e){
-                        e.printStackTrace();
-                    }
 
-                    //timerStart();       //타이머시작
+                    Intent serviceIntent = new Intent(this,WalkingService.class);
+                    startService(serviceIntent);
+                    bindService(serviceIntent,mConnection,BIND_AUTO_CREATE);
 
+                    timerStart();       //타이머시작
 
                     ///bind_end
 
@@ -276,10 +268,10 @@ public class MainActivity extends Activity {
             case R.id.exit: {
 
 
-                /////////unbindService_start
-
+                Intent serviceIntent = new Intent(this,WalkingService.class);
+                stopService(serviceIntent);
                 unbindService(mConnection);
-                /////////unbindService_end
+
 
                 button_start.setVisibility(View.VISIBLE);
                 button_exit.setVisibility(View.GONE);
@@ -450,6 +442,10 @@ public class MainActivity extends Activity {
  protected  void onDestroy(){
      super.onDestroy();
      mRealm.close();
+     /////////unbindService_start
+
+     //unbindService(mConnection);
+     /////////unbindService_end
  }
 
     ////칼로리 구하는 식_start

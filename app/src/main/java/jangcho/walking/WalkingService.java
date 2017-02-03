@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +34,8 @@ public class WalkingService extends Service {
 
         @Override
         public int getTime() throws RemoteException {
+
+            Log.i("getTime","getTime");
 
             return timer_sec;
         }
@@ -61,15 +64,18 @@ public class WalkingService extends Service {
         //////notification_end
 
 
-
+        Log.i("on create","on create");
 
     }
 
     public int onStartCommand(Intent intent, int flags, int startId){
         super.onStartCommand(intent, flags, startId);
 
-
+        timer_sec=0;
         timerStart();
+
+
+        Log.i("on StartCommand","onStartcommand");
 
 
         return START_NOT_STICKY;
@@ -93,11 +99,16 @@ public class WalkingService extends Service {
         second.cancel();
         super.onDestroy();
 
+        Log.i("on Destroy","on Destroy");
+
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
+        Log.i("on bind","on bind");
+
         return mBinder;
     }
 
