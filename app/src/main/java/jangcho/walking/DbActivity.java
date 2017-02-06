@@ -42,6 +42,7 @@ public class DbActivity extends Activity {
         mAdapter = new RecycleAdapter(this);
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         /////리스트뷰 생성_start

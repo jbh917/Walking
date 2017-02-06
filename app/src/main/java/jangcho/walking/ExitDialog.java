@@ -38,9 +38,8 @@ public class ExitDialog extends Activity {
 
             {
 
-                moveTaskToBack(true);
                 finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
+                MainActivity.main_activty.finish();
 
                 break;
             }

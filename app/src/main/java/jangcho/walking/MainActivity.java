@@ -2,6 +2,7 @@ package jangcho.walking;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,10 +38,13 @@ import java.util.TimerTask;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
+
+
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Realm mRealm;
+    public static Activity main_activty;
 
     int sex;         //성별 (0==성별, 1==남, 2==여)
     int tall;          //키
@@ -97,10 +101,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ///////////////bindService_start
         Intent serviceIntent = new Intent(this,WalkingService.class);
         bindService(serviceIntent,mConnection,BIND_AUTO_CREATE);
         ///////////////bindService_end
+
+
 
 
         /////////////////초기화 부분_start
@@ -112,7 +119,7 @@ public class MainActivity extends Activity {
         //강제종료 값 복구_start
         if(savedInstanceState!=null){
 
-
+            Log.i("Bundle","Bundle");
             Bundle bundle = savedInstanceState.getBundle("temp");
             /////////DB_start
 
@@ -139,6 +146,7 @@ public class MainActivity extends Activity {
         text_debug =(TextView)findViewById(R.id.debug);
         button_start = (Button) findViewById(R.id.start);
         button_exit = (Button) findViewById(R.id.exit);
+        main_activty = this;
 
 
         sex = (int) MyProfile.getValue(this, "SEX");
@@ -282,7 +290,6 @@ public class MainActivity extends Activity {
 
                     timer_sec = 0;
                     timerStart();       //타이머시작
-
                     ///bind_end
 
 /*
@@ -477,9 +484,28 @@ public class MainActivity extends Activity {
 
  protected  void onDestroy(){
      super.onDestroy();
-     mRealm.close();
+     Log.i("onDestroy","onDestroy");
+
      /////////unbindService_start
 
+     if(second!=null){
+         second.cancel();
+         timer.cancel();
+     }
+
+     if(WalkingService.isServiceRunning(this)){
+         mRealm.beginTransaction();
+         UserInfo userinfo = mRealm.createObject(UserInfo.class);
+         userinfo.setDate();
+         userinfo.setTime(timer_sec);
+         userinfo.setDistance(distance);
+         mRealm.commitTransaction();
+
+         Intent serviceIntent = new Intent(this,WalkingService.class);
+         stopService(serviceIntent);
+     }
+
+     mRealm.close();
      unbindService(mConnection);
      /////////unbindService_end
  }
@@ -487,8 +513,6 @@ public class MainActivity extends Activity {
     ////칼로리 구하는 식_start
 
     public double cal_cal(){
-
-
 
         return 3.3*(3.5*weight*timer_sec/60)*5/1000;
     }
@@ -515,12 +539,11 @@ public class MainActivity extends Activity {
 
         bundle.putDouble("distance",temp_distance);
         bundle.putInt("time",temp_time);
-        //저장할 데이터를 번들객체에 저장해서, 다시 복구시 넘어갈 번들안에 계층적으로 저장했다가..
-        //복구시에 번들 안에서 다시 이 저장된 번들객체를 추출해서 처리하게 됩니다.
 
         saveBundle.putParcelable("temp",bundle);
 
     }
+
 
 
 

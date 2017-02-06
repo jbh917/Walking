@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:id="@+id/item_list_layout">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="date"
             android:gravity="center"
             android:id="@+id/date"/>
 
@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="time"
             android:gravity="center"
             android:id="@+id/time"/>
 
@@ -29,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="distance"
             android:gravity="center"
             android:id="@+id/distance"/>
 
@@ -37,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="calorie"
             android:gravity="center"
             android:id="@+id/calorie"/>
 

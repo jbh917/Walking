@@ -1,6 +1,7 @@
 package jangcho.walking;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -248,5 +249,18 @@ public class WalkingService extends Service {
 
 
     }
+
+
+    public static boolean isServiceRunning(Context context) {
+        ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo rsi : am.getRunningServices(Integer.MAX_VALUE)) {
+            if (WalkingService.class.getName().equals(rsi.service.getClassName()))
+            return true;
+        }
+
+        return false;
+    }
+
 
 }

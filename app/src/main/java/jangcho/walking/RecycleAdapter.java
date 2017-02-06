@@ -59,6 +59,10 @@ public class RecycleAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.mDistance.setText(""+item.getDistance()+"m");
         holder.mDate.setText(item.getDate());
         holder.mCalorie.setText(""+Double.parseDouble(String.format("%.2f",3.3*(3.5*weight*item.getTime()/60)*5/1000))+"Kcal");
+
+
+
+
     }
 
     @Override
