@@ -3,6 +3,9 @@ package jangcho.walking;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +31,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,8 +69,11 @@ public class MainActivity extends Activity {
     TextView text_distance;
     TextView text_calorie;
     TextView text_debug;
-    Button button_start;
-    Button button_exit;
+    static Button button_start;
+    static Button button_exit;
+    static Button button_db;
+
+    static int mode;
 
 
     private GpsInfo gps;
@@ -110,6 +117,7 @@ public class MainActivity extends Activity {
 
 
 
+
         /////////////////초기화 부분_start
         RealmConfiguration config = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(config);
@@ -146,7 +154,9 @@ public class MainActivity extends Activity {
         text_debug =(TextView)findViewById(R.id.debug);
         button_start = (Button) findViewById(R.id.start);
         button_exit = (Button) findViewById(R.id.exit);
+        button_db = (Button) findViewById(R.id.go_db);
         main_activty = this;
+        mode =1;
 
 
         sex = (int) MyProfile.getValue(this, "SEX");
@@ -270,7 +280,7 @@ public class MainActivity extends Activity {
                     break;
                 } else {
 
-
+                    mode=2;
 
                     button_start.setVisibility(View.GONE);
                     button_exit.setVisibility(View.VISIBLE);
@@ -305,7 +315,7 @@ public class MainActivity extends Activity {
             }
 
             case R.id.exit: {
-
+                mode=1;
 
                 Intent serviceIntent = new Intent(this,WalkingService.class);
                 stopService(serviceIntent);
@@ -330,6 +340,7 @@ public class MainActivity extends Activity {
 
                 //lm.removeUpdates(mLocationListener);
                 distance = 0;
+                timer_sec=0;
 
 /*
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -493,7 +504,7 @@ public class MainActivity extends Activity {
          timer.cancel();
      }
 
-     if(WalkingService.isServiceRunning(this)){
+     if(WalkingService.isServiceRunning(this)&&timer_sec!=0){
          mRealm.beginTransaction();
          UserInfo userinfo = mRealm.createObject(UserInfo.class);
          userinfo.setDate();
@@ -542,6 +553,42 @@ public class MainActivity extends Activity {
 
         saveBundle.putParcelable("temp",bundle);
 
+    }
+
+    public void noti() {
+        Notification mNoti = new Notification.Builder(this)
+                .setContentTitle("")
+                .setContentText("")
+                .setTicker("")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .build();
+
+        NotificationManager mNotimana =
+                (NotificationManager)
+                        getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent notiIntent = new Intent("android.intent.action.MAIN");
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(
+                        this,
+                        0,
+                        notiIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //원하는 레이아웃을 만들어 2번째 값에 넣는다.
+        RemoteViews contentiew =
+                new RemoteViews(getPackageName(), R.layout.noti_view);
+
+        contentiew.setOnClickPendingIntent(R.id.start, pendingIntent);
+        contentiew.setOnClickPendingIntent(R.id.db,pendingIntent);
+
+
+
+        mNoti.flags |= Notification.FLAG_NO_CLEAR;
+        mNoti.contentView = contentiew;
+
+        mNotimana.notify(1, mNoti);
     }
 
 

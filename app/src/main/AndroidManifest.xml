@@ -12,18 +12,29 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+                    android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
 
+        <receiver android:name=".CustomNotiBroadCast">
+            <intent-filter android:priority="10000">
+                <action android:name = "android.intent.action.MAIN"></action>
+            </intent-filter>
+
+        </receiver>
+
         <activity android:name=".DbActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTask"></activity>
         <activity android:name=".ExitDialog"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog"
+            android:launchMode="singleTask"></activity>
         <service android:name=".WalkingService">
             <intent-filter>
                 <action android:name="jangcho.service.WalkingService">

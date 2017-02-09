@@ -3,10 +3,13 @@ package jangcho.walking;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -20,6 +23,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,14 +40,17 @@ public class WalkingService extends Service {
     private double distance = 0;
     private String debug = "";
     private TimerTask second;
+
     private Timer timer;
+    Notification mNoti;
+    NotificationManager mNotimana;
 
     LocationManager lm;
     String provider;
     int count = 0;
     double templat;
     double templon;
-
+    RemoteViews contentiew;
 
     IWalkingService.Stub mBinder = new IWalkingService.Stub() {
         @Override
@@ -74,16 +82,87 @@ public class WalkingService extends Service {
     public void onCreate() {
         super.onCreate();
         //////notification_start
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification noti = new NotificationCompat.Builder(this)
-                .setContentTitle("Walking Service")
-                .setContentText("측정 중입니다.")
+        Intent intent = new Intent(this,MainActivity.class);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pendingIntent0 = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        mNoti = new Notification.Builder(this)
+                .setContentTitle("")
+                .setContentText("")
+                .setTicker("")
+                .setContentIntent(pendingIntent0)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pIntent)
                 .build();
 
-        startForeground(1230, noti);
+        mNotimana =
+                (NotificationManager)
+                        getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent notiIntent1 = new Intent("android.intent.action.MAIN");
+        notiIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        Intent notiIntent2 = new Intent("android.intent.action.MAIN");
+        notiIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        Intent notiIntent3 = new Intent("android.intent.action.MAIN");
+        notiIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        notiIntent1.putExtra("value",1);
+        notiIntent2.putExtra("value",2);
+        notiIntent3.putExtra("value",3);
+
+        PendingIntent pendingIntent1 =
+                PendingIntent.getBroadcast(
+                        this,
+                        1,
+                        notiIntent1,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent pendingIntent2 =
+                PendingIntent.getBroadcast(
+                        this,
+                        2,
+                        notiIntent2,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent pendingIntent3 =
+                PendingIntent.getBroadcast(
+                        this,
+                        3,
+                        notiIntent3,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
+        //원하는 레이아웃을 만들어 2번째 값에 넣는다.
+        contentiew =
+                new RemoteViews(getPackageName(), R.layout.noti_view);
+
+
+
+
+        contentiew.setOnClickPendingIntent(R.id.start, pendingIntent1);
+        contentiew.setOnClickPendingIntent(R.id.db,pendingIntent2);
+        contentiew.setOnClickPendingIntent(R.id.exit,pendingIntent3);
+
+
+        mNoti.flags |= Notification.FLAG_NO_CLEAR;
+        mNoti.contentView = contentiew;
+
+        mNotimana.notify(1, mNoti);
+
 
         //////notification_end
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -163,11 +242,15 @@ public class WalkingService extends Service {
             return;
         }
         lm.removeUpdates(gpsListener);
+        mNotimana.cancel(1);
+
         super.onDestroy();
 
         Log.i("on Destroy","on Destroy");
 
     }
+
+
 
     @Nullable
     @Override

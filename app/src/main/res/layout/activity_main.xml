@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:id="@+id/tall"
                 android:inputType="number"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:maxLines="1"
                 android:background="@null"/>
 
@@ -57,7 +57,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:paddingTop="16dp">
+            android:paddingTop="16sp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:inputType="number"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:maxLines="1"
                 android:id="@+id/weight"
                 android:background="@null"
@@ -102,8 +102,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/timer"
+
             android:gravity="center"
-            android:textSize="50dp"
+            android:textSize="50sp"
             android:visibility="invisible"
             />
 
@@ -118,7 +119,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/distance"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:visibility="invisible"/>
 
             <TextView
@@ -126,7 +127,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/calorie"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:visibility="invisible"/>
 
         </LinearLayout>
@@ -137,7 +138,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/debug"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:visibility="invisible"/>
 
 

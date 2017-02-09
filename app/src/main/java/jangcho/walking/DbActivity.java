@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -42,9 +43,12 @@ public class DbActivity extends Activity {
         mAdapter = new RecycleAdapter(this);
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setHasFixedSize(true);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(mAdapter));
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+
+
         /////리스트뷰 생성_start
 
         RealmResults<UserInfo> userList =  mRealm.where(UserInfo.class).findAll();
